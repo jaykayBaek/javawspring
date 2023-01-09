@@ -3,7 +3,7 @@
 <mapper namespace="com.spring.javawspring.dao.MemberDAO">
 
 <select id="getMemberIdCheck" resultType="com.spring.javawspring.vo.MemberVO">
-	SELECT * FROM member2 WHERE mid = #{mid};
+	SELECT * FROM member2 WHERE mid = #{mid} AND userDel = "NO";
 </select>
 
 <select id="getMemberNickNameCheck" resultType="com.spring.javawspring.vo.MemberVO">
@@ -50,6 +50,9 @@
 	</if>
 	
 </select>
+<select id="getMidToNameAndEmail" resultType="String">
+	select mid from member2 where name=#{name} and email=#{email}; 
+</select>
 
 
 <insert id="setMemberJoinOk">
@@ -67,6 +70,12 @@
 <update id="setMemberPwdUpdate">
 	UPDATE member2
 	SET pwd = #{pwd}
+	WHERE mid = #{mid};
+</update>
+
+<update id="setMemberDelNoToYes">
+	UPDATE member2
+	SET userDel = 'YES'
 	WHERE mid = #{mid};
 </update>
 

@@ -22,4 +22,8 @@ public interface MemberService {
 
 	public void setMemberPwdUpdate(String mid, String pwd);
 
+	public String getMidToNameAndEmail(String name, String toMail);
+
+	public void setMemberDelNoToYes(String mid);
+
 }

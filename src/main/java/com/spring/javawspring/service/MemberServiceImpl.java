@@ -98,5 +98,17 @@ public class MemberServiceImpl implements MemberService{
 	public void setMemberPwdUpdate(String mid, String pwd) {
 		dao.setMemberPwdUpdate(mid, pwd);
 	}
+
+	@Override
+	public String getMidToNameAndEmail(String name, String toMail) {
+		return dao.getMidToNameAndEmail(name, toMail);
+	}
+
+	@Override
+	public void setMemberDelNoToYes(String mid) {
+		dao.setMemberDelNoToYes(mid);
+	}
+
+
 	
 }

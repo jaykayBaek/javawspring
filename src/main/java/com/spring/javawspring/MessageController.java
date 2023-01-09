@@ -75,8 +75,12 @@ public class MessageController {
 			model.addAttribute("url", "study/mail/mailForm");
 		}
 		else if(msgFlag.equals("notMatchEmail")) {
-			model.addAttribute("msg", "입력하신 아이디와 이메일에 일치하는 계정이 없습니다");
-			model.addAttribute("url", "study/mail/mailForm");
+			model.addAttribute("msg", "입력하신 정보의 계정이 없습니다");
+			model.addAttribute("url", "member/login");
+		}
+		else if(msgFlag.equals("notMatchId")) {
+			model.addAttribute("msg", "입력하신 정보의 계정이 없습니다");
+			model.addAttribute("url", "member/login");
 		}
 		else if(msgFlag.equals("memberTmpPwdSendSuccess")) {
 			model.addAttribute("msg", "임시비밀번호를 발송하였습니다.\\n메일을 확인하세요.");
@@ -97,6 +101,10 @@ public class MessageController {
 		else if(msgFlag.equals("fileUploadFail")) {
 			model.addAttribute("msg", "파일 업로드 성공!");
 			model.addAttribute("url", "study/file/uploadForm");
+		}
+		else if(msgFlag.equals("leaveOk")) {
+			model.addAttribute("msg", "그동안 이용해주셔서 감사합니다, "+mid+"님");
+			model.addAttribute("url", "member/login");
 		}
 		
 		return "include/message";

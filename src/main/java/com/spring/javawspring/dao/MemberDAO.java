@@ -28,5 +28,12 @@ public interface MemberDAO {
 	void setMemberPwdUpdate(
 			@Param("mid") String mid,
 			@Param("pwd") String pwd);
+
+	String getMidToNameAndEmail(
+			@Param("name") String name, 
+			@Param("email") String email);
+
+	void setMemberDelNoToYes(@Param("mid") String mid);
+
 	
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -201,7 +202,6 @@ public class MemberController {
 		if(vo != null) {
 			res = "1";
 		}
-		
 		return res;
 	}
 	/*--- 전체리스트와 검색 리스트를 하나의 메소드로 처리... ---*/
@@ -218,6 +218,37 @@ public class MemberController {
 		model.addAttribute("pageVo", pageVo);
 		
 		return "member/memberList";
+	}
+	
+	//아이디 찾기
+	@GetMapping(value="/find/id")
+	public String memberFindIdGet() {
+		return "member/memberIdSearch";
+	}
+	
+	@ResponseBody
+	@PostMapping(value="/find/id", produces = "application/text; charset=utf8")
+	public String MemberFindIdPost(String name, String toMail) {
+		System.out.println("name"+name);
+		System.out.println("tomail"+toMail);
+		String mid = service.getMidToNameAndEmail(name, toMail);
+		if(mid==null) {
+			return "";
+		}
+		
+		MemberVO vo = service.getMemberIdCheck(mid);
+		String tmpMid = vo.getMid();
+		String star = "";
+		for(int i = 0; i<tmpMid.substring(3).length(); i++) {
+			star+="*";
+		}
+		tmpMid = tmpMid.replace(tmpMid.substring(3), star);
+		
+		System.out.println("---------------");
+		System.out.println("????"+tmpMid);
+		
+		sendTmpEmail(toMail, vo.getMid(), "아이디 찾기");
+		return tmpMid;
 	}
 	
 	//비밀번호를 찾기 위한 임시비밀번호 발급 폼으로 이동
@@ -238,7 +269,7 @@ public class MemberController {
 		String tmpPwd = uuid.toString().substring(0, 8);
 		
 		// 임시 비밀번호를 메일로 전송한다.
-		String res = sendTmpEmail(toMail, tmpPwd);
+		String res = sendTmpEmail(toMail, tmpPwd, "임시비밀번호");
 		
 		// 발급 받은 임시 비밀번호를 암호화 처리해서 DB에 저장한다.
 		tmpPwd = passwordEncoder.encode(tmpPwd);
@@ -273,11 +304,50 @@ public class MemberController {
 		return "redirect:/msg/pwdChangeSuccess";
 	}
 	
+	@GetMapping(value="/leave")
+	public String memberLeaveGet() {
+		return "member/memberLeave";
+	}
 	
+	@GetMapping(value="/leaveOk")
+	public String memberLeaveOkGet(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String mid = session.getAttribute("sMid") == null ? "" : ""+session.getAttribute("sMid");
+		if(mid.equals("")) {
+			return "redirect:/msg/levelMemberNo";
+		}
+		service.setMemberDelNoToYes(mid);
+		return "redirect:/msg/leaveOk?mid="+mid;
+	}
 	
-	private String sendTmpEmail(String toMail, String tmpPwd) {
+	@GetMapping(value = "/update")
+	public String memberUpdateGet(HttpServletRequest request, Model model) {
+		HttpSession session = request.getSession();
+		String mid = session.getAttribute("sMid") == null?"":""+session.getAttribute("sMid");
+		if(mid.equals("")) {
+			return "redirect:/msg/levelMemberNo";
+		}
+		MemberVO vo = service.getMemberIdCheck(mid);
+		model.addAttribute("vo", vo);
+		String[] email =vo.getEmail().split("@");
+		model.addAttribute("email1", email[0]);
+		model.addAttribute("email2", email[1]);
+		String[] tel = vo.getTel().split("-");
+		model.addAttribute("tel1", tel[0]);
+		model.addAttribute("tel2", tel[1]);
+		model.addAttribute("tel3", tel[2]);
+		String[] address = vo.getAddress().split("/");
+		model.addAttribute("postcode", address[0]);
+		model.addAttribute("roadAddress", address[1]);
+		model.addAttribute("detailAddress", address[2]);
+		model.addAttribute("extraAddress", address[3]);
+		
+		return "member/memberUpdate";
+	}
+	
+	private String sendTmpEmail(String toMail, String tmp, String flag) {
 		try {
-			String title = "임시비밀번호가 발급되었어요!";
+			String title = "그린컴퓨터학원"+flag+"발급!";
 			String content = "";
 			
 			// 메일을 전송하기위한 객체 : MimeMessage() , MimeMessageHelper()
@@ -292,7 +362,7 @@ public class MemberController {
 			// 메세지 보관함의 내용(content)에 필요한 정보를 추가로 담아서 전송시킬수 있도록 한다.
 			content = content.replace("\n", "<br/>");
 			content += "<br><hr><h3>CJ Green에서 보냅니다.</h3><hr><br>";
-			content += "<span>신규 비밀번호는? "+tmpPwd+"</span>";
+			content += "<span>"+flag+"? "+tmp+"</span>";
 			content += "<img src=\"cid:main.jpg\" width='500px'/>";
 			content += "";
 			content += "<p>방문하기 : <a href='http://49.142.157.251:9090/green2209J_08/'>환영합니다</a></p>";
