@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javawspring.common.ARIAUtil;
 import com.spring.javawspring.common.SecurityUtil;
@@ -35,6 +36,7 @@ import com.spring.javawspring.vo.MemberVO;
 @Controller
 @RequestMapping("/study")
 public class StudyController {
+	
 	@Autowired
 	StudyService service;
 	
@@ -268,6 +270,24 @@ public class StudyController {
 	public String uuidProcessPost() {
 		UUID uuid = UUID.randomUUID();
 		return uuid.toString();
+	}
+	
+	/*--- 파일 업로드 폼 ---*/
+	@GetMapping(value = "/file/uploadForm")
+	public String fileUploadFormGet() {
+		return "study/fileUpload/fileUploadForm";
+	}
+	
+	/*--- 파일 업로드 처리---*/
+	@PostMapping(value = "/file/uploadForm")
+	public String fileUploadFormPost(MultipartFile fName) {
+		String res = service.fileUpload(fName);
+		if(res.equals("1") ) {
+			return "redirect:/msg/fileUploadSuccess";
+		}
+		else {
+			return "redirect:/msg/fileUploadFail";
+		}
 	}
 	
 	

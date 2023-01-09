@@ -20,7 +20,8 @@
 	        <a href="${ctp}/study/password/bCrypt" class="w3-bar-item w3-button">암호화연습3(bCrypt)</a>
 	        <a href="${ctp}/study/ajax/menu" class="w3-bar-item w3-button">AJax</a>
 	        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
-	        <a href="${ctp}/study/uuid/uuidForm" class="w3-bar-item w3-button">메일연습</a>
+	        <a href="${ctp}/study/file/uploadForm" class="w3-bar-item w3-button">파일업로드</a>
+	        <a href="${ctp}/study/uuid/uuidForm" class="w3-bar-item w3-button">uuid</a>
 	        <a href="#" class="w3-bar-item w3-button">달력연습</a>
 	      </div>
 	    </div>
@@ -41,6 +42,7 @@
 	        <a href="#" class="w3-bar-item w3-button">웹메세지</a>
 	        <a href="${ctp}/member/list" class="w3-bar-item w3-button">회원리스트</a>
 	        <a href="#" class="w3-bar-item w3-button">회원정보수정</a>
+	        <a href="${ctp}/member/update/pwd" class="w3-bar-item w3-button">비밀번호수정</a>
 	        <a href="#" class="w3-bar-item w3-button">회원탈퇴</a>
 	        <c:if test="${sLevel==0}">
 		        <a href="#" class="w3-bar-item w3-button">관리자메뉴</a>

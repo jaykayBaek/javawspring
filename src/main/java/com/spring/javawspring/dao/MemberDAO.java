@@ -24,5 +24,9 @@ public interface MemberDAO {
 	List<MemberVO> getMemberList(
 			@Param("startIndexNo") int startIndexNo,
 			@Param("pageSize") int pageSize);
+
+	void setMemberPwdUpdate(
+			@Param("mid") String mid,
+			@Param("pwd") String pwd);
 	
 }

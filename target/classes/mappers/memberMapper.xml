@@ -64,5 +64,10 @@
 	SET lastDate = now(), point = #{nowTodayPoint}, todayCnt=#{todayCnt}, visitCnt=visitCnt+1
 	WHERE mid = #{mid}
 </update>
+<update id="setMemberPwdUpdate">
+	UPDATE member2
+	SET pwd = #{pwd}
+	WHERE mid = #{mid};
+</update>
 
 </mapper>

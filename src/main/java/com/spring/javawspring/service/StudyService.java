@@ -2,6 +2,8 @@ package com.spring.javawspring.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.spring.javawspring.vo.GuestVO;
 
 public interface StudyService {
@@ -15,5 +17,7 @@ public interface StudyService {
 	public List<GuestVO> getGuestName(String mid);
 
 	public List<GuestVO> getSearchResult(String search, String condition);
+
+	public String fileUpload(MultipartFile fName);
 	
 }
