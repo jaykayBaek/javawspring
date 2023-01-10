@@ -45,7 +45,7 @@
 	        <a href="${ctp}/member/update/pwd" class="w3-bar-item w3-button">비밀번호수정</a>
 	        <a href="${ctp}/member/leave" class="w3-bar-item w3-button">회원탈퇴</a>
 	        <c:if test="${sLevel==0}">
-		        <a href="#" class="w3-bar-item w3-button">관리자메뉴</a>
+		        <a href="${ctp}/admin/main" class="w3-bar-item w3-button">관리자메뉴</a>
 	        </c:if>
 	      </div>
 	    </div>

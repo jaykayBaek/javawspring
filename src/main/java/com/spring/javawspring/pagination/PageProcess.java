@@ -1,8 +1,12 @@
 package com.spring.javawspring.pagination;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.javawspring.dao.BoardDAO;
 import com.spring.javawspring.dao.GuestDAO;
 import com.spring.javawspring.dao.MemberDAO;
 
@@ -10,19 +14,14 @@ import com.spring.javawspring.dao.MemberDAO;
 public class PageProcess {
 	@Autowired GuestDAO guestDAO;
 	@Autowired MemberDAO memberDAO;
+	@Autowired BoardDAO boardDAO;
 		
 	public PageVO getTotRecordCnt(int pag, int pageSize, String section, String part, String SearchString) {
-		PageVO vo = new PageVO();
+		PageVO pageVo = new PageVO();
 		
 		int totRecordCnt = 0;
 		
-		if(section.equals("member")) {
-			totRecordCnt = memberDAO.getTotRecordCnt();
-		} else if(section.equals("guest")) {
-			totRecordCnt = guestDAO.getTotRecordCnt();
-		}
-		
-		
+		totRecordCnt = getTotRecordCnt(section, totRecordCnt);
 		
 		int totPage = (totRecordCnt % pageSize)==0 ? totRecordCnt / pageSize : (totRecordCnt / pageSize) + 1;
 		int startIndexNo = (pag - 1) * pageSize;
@@ -32,17 +31,29 @@ public class PageProcess {
 		int curBlock = (pag - 1) / blockSize;
 		int lastBlock = (totPage - 1) / blockSize;
 		
-		vo.setPag(pag);
-		vo.setPageSize(pageSize);
-		vo.setTotRecCnt(totRecordCnt);
-		vo.setTotPage(totPage);
-		vo.setStartIndexNo(startIndexNo);
-		vo.setCurScrStartNo(curScrStartNo);
-		vo.setBlockSize(blockSize);
-		vo.setCurBlock(curBlock);
-		vo.setLastBlock(lastBlock);
+		pageVo.setPag(pag);
+		pageVo.setPageSize(pageSize);
+		pageVo.setTotRecCnt(totRecordCnt);
+		pageVo.setTotPage(totPage);
+		pageVo.setStartIndexNo(startIndexNo);
+		pageVo.setCurScrStartNo(curScrStartNo);
+		pageVo.setBlockSize(blockSize);
+		pageVo.setCurBlock(curBlock);
+		pageVo.setLastBlock(lastBlock);
 		
-		return vo;
+		return pageVo;
+	}
+
+	private int getTotRecordCnt(String section, int totRecordCnt) {
+		
+		if(section.equals("member")) {
+			totRecordCnt = memberDAO.getTotRecordCnt();
+		} else if(section.equals("guest")) {
+			totRecordCnt = guestDAO.getTotRecordCnt();
+		} else if(section.equals("board")) {
+			totRecordCnt = boardDAO.getTotRecordCnt();
+		}
+		return totRecordCnt;
 	}
 	
 	

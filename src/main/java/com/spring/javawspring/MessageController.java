@@ -59,7 +59,7 @@ public class MessageController {
 		/*--- 등급 관련 ---*/
 		else if(msgFlag.equals("levelAdminNo")) {
 			model.addAttribute("msg", "관리자가 아니시거나 세션이 만료되었습니다. 로그인해주세요.");
-			model.addAttribute("url", "member/login");
+			model.addAttribute("url", "/");
 		}
 		else if(msgFlag.equals("levelMemberNo")) {
 			model.addAttribute("msg", "로그인 이후 사용할 수 있는 서비스입니다.");
@@ -67,7 +67,7 @@ public class MessageController {
 		}
 		else if(msgFlag.equals("levelCheck")) {
 			model.addAttribute("msg", "등업이후 사용할 수 있는 서비스입니다.");
-			model.addAttribute("url", "member/login");
+			model.addAttribute("url", "/");
 		}
 		
 		else if(msgFlag.equals("mailSendOk")) {
@@ -105,6 +105,14 @@ public class MessageController {
 		else if(msgFlag.equals("leaveOk")) {
 			model.addAttribute("msg", "그동안 이용해주셔서 감사합니다, "+mid+"님");
 			model.addAttribute("url", "member/login");
+		}
+		else if(msgFlag.equals("boardInputSuccess")) {
+			model.addAttribute("msg", "게시글이 등록되었습니다");
+			model.addAttribute("url", "board/list");
+		}
+		else if(msgFlag.equals("boardInputFail")) {
+			model.addAttribute("msg", "게시글 등록 실패했습니다");
+			model.addAttribute("url", "board/list");
 		}
 		
 		return "include/message";

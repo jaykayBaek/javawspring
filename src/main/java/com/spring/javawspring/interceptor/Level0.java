@@ -16,7 +16,7 @@ public class Level0 extends HandlerInterceptorAdapter{
 		int level = session.getAttribute("sLevel") == null ? 100 : (int)session.getAttribute("sLevel");
 		
 		if(level != 0) {
-			RequestDispatcher dispatcher = request.getRequestDispatcher("msg/adminNo");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/msg/adminNo");
 			dispatcher.forward(request, response);
 			return false;
 		}

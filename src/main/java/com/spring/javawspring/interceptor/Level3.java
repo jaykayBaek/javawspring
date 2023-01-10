@@ -14,17 +14,17 @@ public class Level3 extends HandlerInterceptorAdapter{
 		
 		HttpSession session = request.getSession();
 		int level = session.getAttribute("sLevel") == null ? 100 : (int)session.getAttribute("sLevel");
-		RequestDispatcher dispatcher;
 		
+		RequestDispatcher dispatcher;
 		// 비회원인 경우
 		if(level > 4) {
-			dispatcher = request.getRequestDispatcher("msg/levelMemberNo");
+			dispatcher = request.getRequestDispatcher("/msg/levelMemberNo");
 			dispatcher.forward(request, response);
 			return false;
 		}
 		// 정회원 권한 이상의 서비스를 열람하려 할 때
-		else if(level == 3) {
-			dispatcher = request.getRequestDispatcher("msg/levelCheck");
+		else if(level > 3) {
+			dispatcher = request.getRequestDispatcher("/msg/levelCheck");
 			dispatcher.forward(request, response);
 			return false;
 		}

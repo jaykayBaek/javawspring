@@ -18,7 +18,7 @@ public class Level4 extends HandlerInterceptorAdapter{
 		
 		// 비회원인 경우
 		if(level > 4) {
-			dispatcher = request.getRequestDispatcher("msg/levelMemberNo");
+			dispatcher = request.getRequestDispatcher("/msg/levelMemberNo");
 			dispatcher.forward(request, response);
 			return false;
 		}
