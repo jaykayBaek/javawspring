@@ -35,7 +35,7 @@
     	
     	$.ajax({
     		type  : "post",
-    		url   : "${ctp}/admin/member/member-level",
+    		url   : "${ctp}/admin/member/level",
     		data  : {
     			level : items[0],
     			idx : items[1]
@@ -60,13 +60,13 @@
 <div class="container">
   <h2 class="text-center">전체 회원 리스트</h2>
   <br/>
-  <form name="myform">
+  <form name="myform" method="post">
   	<div class="row mb-2">
   	  <div class="col form-inline">
   	    <input type="text" name="mid" class="form-control" autofocus />&nbsp;
   	    <input type="button" value="아이디개별검색" onclick="midSearch();" class="btn btn-secondary" />
   	  </div>
-  	  <div class="col text-right"><button type="button" onclick="location.href='${ctp}/admin/member/memberList';" class="btn btn-secondary">전체검색</button></div>
+  	  <div class="col text-right"><button type="button" onclick="location.href='${ctp}/admin/member/list;" class="btn btn-secondary">전체검색</button></div>
   	</div>
   </form>
   <table class="table table-hover text-center">
@@ -109,63 +109,41 @@
 <br/>
 <!-- 블록 페이지 시작 -->
 <div class="text-center">
-<%--   <ul class="pagination justify-content-center">
-    <c:if test="${pageVo.pag > 1}">
-      <li class="page-item"><a class="page-link text-secondary" href="${ctp}/admin/member/list?pag=1">첫페이지</a></li>
-    </c:if>
-    <c:if test="${pageVo.curBlock > 0}">
-      <li class="page-item"><a class="page-link text-secondary" href="${ctp}/admin/member/list?pag=${(pageVo.curBlock-1)*pageVo.blockSize + 1}">이전블록</a></li>
-    </c:if>
-    <c:forEach var="i" begin="${(pageVo.curBlock)*pageVo.blockSize + 1}" end="${(pageVo.curBlock)*pageVo.blockSize + pageVo.blockSize}" varStatus="st">
-      <c:if test="${i <= pageVo.totPage && i == pageVo.pag}">
-    		<li class="page-item active"><a class="page-link bg-secondary border-secondary" href="${ctp}/admin/member/list?pag=${i}">${i}</a></li>
-    	</c:if>
-      <c:if test="${i <= pageVo.totPage && i != pageVo.pag}">
-    		<li class="page-item"><a class="page-link text-secondary" href="${ctp}/admin/member/list?pag=${i}">${i}</a></li>
-    	</c:if>
-    </c:forEach>
-    <c:if test="${pageVo.curBlock < pageVo.lastBlock}">
-      <li class="page-item"><a class="page-link text-secondary" href="${ctp}/admin/member/list?pag=${(pageVo.curBlock+1)*pageVo.blockSize + 1}">다음블록</a></li>
-    </c:if>
-    <c:if test="${pageVo.pag < pageVo.totPage}">
-      <li class="page-item"><a class="page-link text-secondary" href="${ctp}/admin/member/list?pag=${pageVo.totPage}">마지막페이지</a></li>
-    </c:if>
-  </ul> --%>
       <ul class="pagination justify-content-center">
 	    <c:if test="${pageVo.pag <= 1}">
-	      <li class="page-item disabled"><a class="page-link" href="${ctp}/guest/list?pag=1">첫페이지</a></li>
+	      <li class="page-item disabled"><a class="page-link" href="${ctp}/member/list?pag=1">첫페이지</a></li>
 	    </c:if>
 	    <c:if test="${pageVo.curBlock <= 0}">
-	      <li class="page-item disabled"><a class="page-link" href="${ctp}/guest/list?pag=${(pageVo.curBlock-1)*pageVo.blockSize + 1}">이전블록</a></li>
+	      <li class="page-item disabled"><a class="page-link" href="${ctp}/member/list?pag=${(pageVo.curBlock-1)*pageVo.blockSize + 1}">이전블록</a></li>
 	    </c:if>
 	    <c:if test="${pageVo.pag > 1}">
-	      <li class="page-item"><a class="page-link" href="${ctp}/guest/list?pag=1">첫페이지</a></li>
+	      <li class="page-item"><a class="page-link" href="${ctp}/member/list?pag=1">첫페이지</a></li>
 	    </c:if>
 	    <c:if test="${pageVo.curBlock > 0}">
-	      <li class="page-item"><a class="page-link" href="${ctp}/guest/list?pag=${(pageVo.curBlock-1)*pageVo.blockSize + 1}">이전블록</a></li>
+	      <li class="page-item"><a class="page-link" href="${ctp}/member/list?pag=${(pageVo.curBlock-1)*pageVo.blockSize + 1}">이전블록</a></li>
 	    </c:if>
 	    
 	    <c:forEach var="i" begin="${(pageVo.curBlock)*pageVo.blockSize + 1}" end="${(pageVo.curBlock)*pageVo.blockSize + pageVo.blockSize}" varStatus="st">
 	      <c:if test="${i <= pageVo.totPage && i == pageVo.pag}">
-	    		<li class="page-item active"><a class="page-link" href="${ctp}/guest/list?pag=${i}">${i}</a></li>
+	    		<li class="page-item active"><a class="page-link" href="${ctp}/member/list?pag=${i}">${i}</a></li>
 	    	</c:if>
 	      <c:if test="${i <= pageVo.totPage && i != pageVo.pag}">
-	    		<li class="page-item"><a class="page-link" href="${ctp}/guest/list?pag=${i}">${i}</a></li>
+	    		<li class="page-item"><a class="page-link" href="${ctp}/member/list?pag=${i}">${i}</a></li>
 	    	</c:if>
 	    </c:forEach>
 	    
 	    <c:if test="${pageVo.curBlock >= pageVo.lastBlock}">
-	      <li class="page-item disabled"><a class="page-link" href="${ctp}/guest/list?page=${(pageVo.curBlock+1)*pageVo.blockSize + 1}">다음블록</a></li>
+	      <li class="page-item disabled"><a class="page-link" href="${ctp}/member/list?page=${(pageVo.curBlock+1)*pageVo.blockSize + 1}">다음블록</a></li>
 	    </c:if>
 	    <c:if test="${pageVo.pag >= pageVo.totPage}">
-	      <li class="page-item disabled"><a class="page-link" href="${ctp}/guest/list?page=${pageVo.totPage}">마지막페이지</a></li>
+	      <li class="page-item disabled"><a class="page-link" href="${ctp}/member/list?page=${pageVo.totPage}">마지막페이지</a></li>
 	    </c:if>
 	    
 	    <c:if test="${pageVo.curBlock < pageVo.lastBlock}">
-	      <li class="page-item"><a class="page-link" href="${ctp}/guest/list?page=${(pageVo.curBlock+1)*pageVo.blockSize + 1}">다음블록</a></li>
+	      <li class="page-item"><a class="page-link" href="${ctp}/member/list?page=${(pageVo.curBlock+1)*pageVo.blockSize + 1}">다음블록</a></li>
 	    </c:if>
 	    <c:if test="${pageVo.pag < pageVo.totPage}">
-	      <li class="page-item"><a class="page-link" href="${ctp}/guest/list?page=${pageVo.totPage}">마지막페이지</a></li>
+	      <li class="page-item"><a class="page-link" href="${ctp}/member/list?page=${pageVo.totPage}">마지막페이지</a></li>
 	    </c:if>
     </ul>
 </div>

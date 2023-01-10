@@ -8,32 +8,33 @@ import com.spring.javawspring.vo.MemberVO;
 
 public interface MemberDAO {
 
-	MemberVO getMemberIdCheck(@Param("mid") String mid);
+	public MemberVO getMemberIdCheck(@Param("mid") String mid);
 
-	MemberVO getMemberNickNameCheck(@Param("nickName") String nickName);
+	public MemberVO getMemberNickNameCheck(@Param("nickName") String nickName);
 
-	int setMemberJoinOk(@Param("vo") MemberVO vo);
+	public int setMemberJoinOk(@Param("vo") MemberVO vo);
 
-	void setMemTotalUpdate(
+	public void setMemTotalUpdate(
 			@Param("mid") String mid,
 			@Param("nowTodayPoint") int nowTodayPoint,
 			@Param("todayCnt") int todayCnt);
 
-	int getTotRecordCnt();
+	public int getTotRecordCnt(@Param("mid") String mid);
 
-	List<MemberVO> getMemberList(
+	public List<MemberVO> getMemberList(
 			@Param("startIndexNo") int startIndexNo,
-			@Param("pageSize") int pageSize);
+			@Param("pageSize") int pageSize,
+		    @Param("mid") String mid);
 
-	void setMemberPwdUpdate(
+	public void setMemberPwdUpdate(
 			@Param("mid") String mid,
 			@Param("pwd") String pwd);
 
-	String getMidToNameAndEmail(
+	public String getMidToNameAndEmail(
 			@Param("name") String name, 
 			@Param("email") String email);
 
-	void setMemberDelNoToYes(@Param("mid") String mid);
+	public void setMemberDelNoToYes(@Param("mid") String mid);
 
 	
 }

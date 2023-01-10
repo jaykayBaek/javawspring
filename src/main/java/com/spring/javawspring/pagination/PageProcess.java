@@ -1,8 +1,5 @@
 package com.spring.javawspring.pagination;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +13,12 @@ public class PageProcess {
 	@Autowired MemberDAO memberDAO;
 	@Autowired BoardDAO boardDAO;
 		
-	public PageVO getTotRecordCnt(int pag, int pageSize, String section, String part, String SearchString) {
+	public PageVO getTotRecordCnt(int pag, int pageSize, String section, String part, String searchString) {
 		PageVO pageVo = new PageVO();
 		
 		int totRecordCnt = 0;
 		
-		totRecordCnt = getTotRecordCnt(section, totRecordCnt);
+		totRecordCnt = getTotRecordCnt(section, totRecordCnt, searchString);
 		
 		int totPage = (totRecordCnt % pageSize)==0 ? totRecordCnt / pageSize : (totRecordCnt / pageSize) + 1;
 		int startIndexNo = (pag - 1) * pageSize;
@@ -44,10 +41,10 @@ public class PageProcess {
 		return pageVo;
 	}
 
-	private int getTotRecordCnt(String section, int totRecordCnt) {
+	private int getTotRecordCnt(String section, int totRecordCnt, String mid) {
 		
 		if(section.equals("member")) {
-			totRecordCnt = memberDAO.getTotRecordCnt();
+			totRecordCnt = memberDAO.getTotRecordCnt(mid);
 		} else if(section.equals("guest")) {
 			totRecordCnt = guestDAO.getTotRecordCnt();
 		} else if(section.equals("board")) {

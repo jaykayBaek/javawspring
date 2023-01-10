@@ -84,14 +84,14 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public int getTotRecordCnt() {
-		return dao.getTotRecordCnt();
+	public int getTotRecordCnt(String mid) {
+		return dao.getTotRecordCnt(mid);
 	}
 
 	@Override
-	public List<MemberVO> getMemberList(int startIndexNo, int pageSize) {
+	public List<MemberVO> getMemberList(int startIndexNo, int pageSize, String mid) {
 		
-		return dao.getMemberList(startIndexNo, pageSize);
+		return dao.getMemberList(startIndexNo, pageSize, mid);
 	}
 
 	@Override

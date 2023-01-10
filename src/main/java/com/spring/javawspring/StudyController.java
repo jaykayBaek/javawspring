@@ -200,7 +200,7 @@ public class StudyController {
 	@GetMapping(value = "/mail/mailForm")
 	public String mailFormGet(Model model, String email) {
 		
-		List<MemberVO> vos = memberService.getMemberList(0, 1000);
+		List<MemberVO> vos = memberService.getMemberList(0, 1000, "");
 
 		model.addAttribute("vos", vos);
 		model.addAttribute("cnt", vos.size());

@@ -16,9 +16,9 @@ public interface MemberService {
 
 	public void setVisitMemberProcess(MemberVO vo);
 
-	public int getTotRecordCnt();
+	public int getTotRecordCnt(String mid);
 
-	public List<MemberVO> getMemberList(int startIndexNo, int pageSize);
+	public List<MemberVO> getMemberList(int startIndexNo, int pageSize, String mid);
 
 	public void setMemberPwdUpdate(String mid, String pwd);
 

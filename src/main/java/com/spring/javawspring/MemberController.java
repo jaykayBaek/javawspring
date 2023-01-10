@@ -210,7 +210,7 @@ public class MemberController {
 			@RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
 
 		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "member", "", "");
-		List<MemberVO> vos = service.getMemberList(pageVo.getStartIndexNo(), pageVo.getPageSize());
+		List<MemberVO> vos = service.getMemberList(pageVo.getStartIndexNo(), pageVo.getPageSize(), mid);
 		
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);

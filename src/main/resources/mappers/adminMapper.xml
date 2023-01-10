@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.javawspring.dao.AdminDAO">
+	<select id="getBeforeLeaveMemberList" resultType="com.spring.javawspring.vo.MemberVO">
+		select *
+		from member2
+		where userDel = 'YES';
+	</select>
+
 	<update id="setMemberLevelUp">
 		UPDATE member2
 		SET level = #{level}
 		WHERE idx = #{idx};
 	</update>
+	<delete id="setUserLeave">
+		delete from member2  where idx = #{idx};
+	</delete>
+
 </mapper>

@@ -55,10 +55,22 @@ public class AdminController {
 			@RequestParam(value = "pag", defaultValue = "1", required = false) int pag,
 			@RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
 
-		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "member", "", "");
-		System.out.println("indexno"+pageVo.getStartIndexNo());
-		System.out.println("pagedize"+pageVo.getPageSize());
-		List<MemberVO> vos = memberService.getMemberList(pageVo.getStartIndexNo(), pageVo.getPageSize());
+		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "member", "", mid);
+		List<MemberVO> vos = memberService.getMemberList(pageVo.getStartIndexNo(), pageVo.getPageSize(), mid);
+		
+		model.addAttribute("vos", vos);
+		model.addAttribute("pageVo", pageVo);
+		
+		return "admin/member/adminMemberList";
+	}
+	@PostMapping(value = "/member/list")
+	public String listPost(Model model, 
+			@RequestParam(value = "mid", defaultValue = "", required = false) String mid,
+			@RequestParam(value = "pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize) {
+		
+		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "member", "", mid);
+		List<MemberVO> vos = memberService.getMemberList(pageVo.getStartIndexNo(), pageVo.getPageSize(), mid);
 		
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);
@@ -68,10 +80,22 @@ public class AdminController {
 	
 	/*--- 회원 등업하기 ---*/
 	@ResponseBody
-	@PostMapping(value = "/member/member-level")
+	@PostMapping(value = "/member/level")
 	public String adminMemberLevelPost(int idx, int level) {
 		int res = service.setMemberLevelUp(idx, level);
-		
+		return res+"";
+	}
+	/*--- 회원탈퇴승인창가기 ---*/
+	@GetMapping(value = "/member/confirm-leave")
+	public String adminMemberConfirmLeaveGet(Model model) {
+		List<MemberVO> vos = service.getBeforeLeaveMemberList();
+		model.addAttribute("vos", vos);
+		return "admin/member/adminMemberConfirmLeave";
+	}
+	@PostMapping(value = "/member/confirm-leave")
+	@ResponseBody
+	public String adminMemberConfirmLeavePost(int idx) {
+		int res = service.setUserLeave(idx);
 		return res+"";
 	}
 

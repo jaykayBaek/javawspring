@@ -15,6 +15,7 @@
   		background-color: #aaa;
   		color:#fff;
   	}
+  	
   </style>
 </head>
 <body>
@@ -32,6 +33,9 @@
   <hr/>
   <p>
     <a href="${ctp}/admin/member/list" target="adminContent">회원리스트</a>
+  </p>
+  <p>
+    <a href="${ctp}/admin/member/confirm-leave" target="adminContent">회원탈퇴승인처리</a>
   </p>
 </div>
 <p><br/></p>
