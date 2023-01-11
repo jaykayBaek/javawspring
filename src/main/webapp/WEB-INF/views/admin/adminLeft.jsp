@@ -37,6 +37,12 @@
   <p>
     <a href="${ctp}/admin/member/confirm-leave" target="adminContent">회원탈퇴승인처리</a>
   </p>
+  <p>
+  	<b>임시파일</b>
+  </p>
+  <p>
+    <a href="${ctp}/admin/file/list" target="adminContent">ckeditor 파일 제거</a>
+  </p>
 </div>
 <p><br/></p>
 </body>

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.spring.javawspring.vo.BoardVO;
+import com.spring.javawspring.vo.GoodVO;
 
 public interface BoardDAO {
 
@@ -19,6 +20,13 @@ public interface BoardDAO {
 	public BoardVO getBoardContent(@Param("idx")int idx);
 
 	public void setBoardReadNum(@Param("idx") int idx);
-	
+
+	public GoodVO getGoodCheck(@Param("part") String part, @Param("idxPart")long idxPart, @Param("mid")String mid);
+
+	public List<BoardVO> getPrevNext(@Param("idx") int idx);
+
+	public void setBoardDelete(@Param("idx")int idx);
+
+	public void setBoardUpdateOk(@Param("vo") BoardVO vo);
 	
 }

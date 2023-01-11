@@ -14,7 +14,8 @@ public class MessageController {
 	@GetMapping(value="/{msgFlag}")
 	public String messageGet(
 			@PathVariable String msgFlag, Model model, 
-			@RequestParam(value = "mid", defaultValue = "", required = false) String mid) {
+			@RequestParam(value = "mid", defaultValue = "", required = false) String mid, 
+			@RequestParam(value = "parameter", defaultValue = "", required = false) String parameter) {
 		
 		if(msgFlag.equals("memberLoginOk")) {
 			model.addAttribute("msg", mid+"님 로그인되셨습니다.");
@@ -113,6 +114,14 @@ public class MessageController {
 		else if(msgFlag.equals("boardInputFail")) {
 			model.addAttribute("msg", "게시글 등록 실패했습니다");
 			model.addAttribute("url", "board/list");
+		}
+		else if(msgFlag.equals("boardDeleteSuccess")) {
+			model.addAttribute("msg", "게시글을 삭제했습니다");
+			model.addAttribute("url", "board/list"+parameter);
+		}
+		else if(msgFlag.equals("boardUpdateSuccess")) {
+			model.addAttribute("msg", "게시글 수정이 완료되었습니다.");
+			model.addAttribute("url", "board/list"+parameter);
 		}
 		
 		return "include/message";

@@ -59,13 +59,13 @@ public class HomeController {
 		byte[] bytes = upload.getBytes();
 		
 		// ckeditor에서 올린(전송) 파일을, 서버 파일시스템에 실제로 저장할 경로를 결정한다.
-		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/board/");
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/ckeditor/");
 		OutputStream os = new FileOutputStream(new File(realPath + oFileName));
 		os.write(bytes);
 		
 		// 서버 파일시스템에 저장되어 있는 파일을 브라우저 편집 화면에 보여주기 위한 작업
 		PrintWriter out = response.getWriter();
-		String fileUrl = request.getContextPath() + "/board/" + oFileName;
+		String fileUrl = request.getContextPath() + "/data/ckeditor/" + oFileName;
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("originalFilename", oFileName);
 		map.put("uploaded", 1);

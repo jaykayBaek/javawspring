@@ -1,6 +1,10 @@
 package com.spring.javawspring;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -98,5 +103,33 @@ public class AdminController {
 		int res = service.setUserLeave(idx);
 		return res+"";
 	}
+	
+	@GetMapping("file/list")
+	public String fileListGet(HttpServletRequest request, Model model) {
+		String realPath = request.getRealPath("/resources/data/ckeditor/");
 
+		String[] files = new File(realPath).list();
+		
+		model.addAttribute("files", files);
+		
+		return "admin/file/fileList";
+	}
+	@PostMapping("file/list")
+	@ResponseBody
+	public String fileListPost(
+			@RequestParam(value="data[]") List<String> data, HttpServletRequest request) {
+		final String ckeditorPath = request.getSession().getServletContext().getRealPath("/resources/data/ckeditor/");
+		String filePath = "";
+		String res = "0";
+		if(data.iterator().hasNext()) {
+			for(String fileName : data) {
+				filePath = ckeditorPath + fileName;
+				File deleteFile = new File(filePath);
+				deleteFile.delete();
+			}
+			res = "1";
+		}
+		
+		return res;
+	}
 }

@@ -59,7 +59,7 @@
     // 게시글 삭제처리
     function boDelCheck() {
     	let ans = confirm("현 게시글을 삭제하시겠습니까?");
-    	if(ans) location.href = "${ctp}/board/delete?idx=${pageVo.idx}&pag=${pag}&pageSize=${pageSize}&mid=${vo.mid}";
+    	if(ans) location.href = "${ctp}/board/delete?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}";
     }
     
     // 댓글 달기
@@ -188,8 +188,10 @@
         <c:if test="${flag == 'search'}"><input type="button" value="돌아가기" onclick="location.href='${ctp}/board/search?search=${search}&searchString=${searchString}&pageSize=${pageSize}&pag=${pag}';" class="btn btn-secondary"/></c:if>
         <c:if test="${flag != 'search'}">
           <input type="button" value="돌아가기" onclick="location.href='${ctp}/board/list?pageSize=${pageSize}&pag=${pag}';" class="btn btn-secondary"/>
-	        <c:if test="${sMid == vo.mid || sLevel == 0}">
+			<c:if test="${sMid == vo.mid}">
 		        <input type="button" value="수정하기" onclick="location.href='${ctp}/board/update?idx=${vo.idx}&pageSize=${pageSize}&pag=${pag}';" class="btn btn-success"/>
+			</c:if>
+	        <c:if test="${sMid == vo.mid || sLevel == 0}">
 		        <input type="button" value="삭제하기" onclick="boDelCheck()" class="btn btn-danger"/>
 	        </c:if>
         </c:if>
@@ -202,12 +204,27 @@
 	  <table class="table table-borderless">
 	    <tr>
 	      <td>
-	        <c:if test="${preVo.preIdx != 0}">
+<%-- 	        <c:if test="${preVo.preIdx != 0}">
 	          👈 <a href="${ctp}/board/content?idx=${preVo.preIdx}&pageSize=${pageSize}&pag=${pag}">이전글 : ${preVo.preTitle}</a><br/>
 	        </c:if>
 	        <c:if test="${nextVo.nextIdx != 0}">
 	          👉 <a href="${ctp}/board/content?idx=${nextVo.nextIdx}&pageSize=${pageSize}&pag=${pag}">다음글 : ${nextVo.nextTitle}</a>
-	        </c:if>
+	        </c:if> --%>
+	        <div class="row h5">
+	        	<div class="col">
+		        	<c:if test="${!empty pnVos[1]}">
+				        <a href="${ctp}/board/content?idx=${pnVos[1].idx}&pageSize=${pageSize}&pag=${pag}">다음글 - ${pnVos[1].title}</a>
+		        	</c:if>
+		        	<c:if test="${vo.idx < pnVos[0].idx }">
+				        <a href="${ctp}/board/content?idx=${pnVos[0].idx}&pageSize=${pageSize}&pag=${pag}">다음글 - ${pnVos[0].title}</a>
+					</c:if>
+	        	</div>
+	        	<div class="col text-right">
+		        	<c:if test="${vo.idx > pnVos[0].idx }">
+				        <a href="${ctp}/board/content?idx=${pnVos[0].idx}&pageSize=${pageSize}&pag=${pag}">이전글 - ${pnVos[0].title}</a>
+					</c:if>
+	        	</div>
+	        </div>
 	      </td>
 	    </tr>
 	  </table>

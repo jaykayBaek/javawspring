@@ -14,6 +14,27 @@
 		SELECT * FROM board2 WHERE idx = #{idx};
 	</select>
 	
+	<!-- <![CDATA[condition]]> -->
+	<select id="getPrevNext" resultType="com.spring.javawspring.vo.BoardVO">
+		SELECT idx, title
+		FROM board2
+		WHERE idx
+		IN (
+			 (SELECT idx from board2 where <![CDATA[idx < #{idx}]]> ORDER BY idx DESC LIMIT 1),
+			 (SELECT idx from board2 where <![CDATA[idx > #{idx}]]> ORDER BY idx LIMIT 1)
+		)
+		
+	</select>
+	
+<!-- 	<select id="getGoodCheck" resultType="com.spring.javawspring.vo.GoodVO">
+		SELECT * FROM good WHERE part=#{part} and idx_part = #{idxPart} and mid=#{mid} ;
+	</select>
+	 -->
+	
+	<delete id="setBoardDelete">
+		DELETE FROM board2 WHERE idx = #{idx}
+	</delete>
+	
 	<insert id="setBoardInput">
 		INSERT INTO board2
 		VALUES(DEFAULT, #{vo.nickName}, #{vo.title}, #{vo.email}, #{vo.homePage}, 
@@ -22,6 +43,13 @@
 	
 	<update id="setBoardReadNum">
 		UPDATE board2 SET readNum = readNum+1 WHERE idx=#{idx};
+	</update>
+	
+	<update id="setBoardUpdateOk">
+		UPDATE board2 
+		SET title = #{vo.title}, email = #{vo.email}, homePage = #{vo.homePage},
+			content = #{vo.content}, hostIp = #{vo.hostIp}
+		WHERE idx=#{vo.idx}
 	</update>
 	
 </mapper>
