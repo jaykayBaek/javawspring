@@ -5,22 +5,32 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.spring.javawspring.pagination.PageProcess;
 import com.spring.javawspring.pagination.PageVO;
 import com.spring.javawspring.service.BoardService;
 import com.spring.javawspring.service.MemberService;
+import com.spring.javawspring.vo.BoardReplyVO;
 import com.spring.javawspring.vo.BoardVO;
 import com.spring.javawspring.vo.MemberVO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping("/board")
+@Slf4j
 public class BoardController {
 
 	@Autowired
@@ -35,16 +45,41 @@ public class BoardController {
 	@GetMapping(value = "/list")
 	public String boardListGet(Model model,
 			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
-			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize
+			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize,
+			@RequestParam(name="search", defaultValue="", required = false) String search,
+			@RequestParam(name="searchString", defaultValue="", required = false) String searchString
 			) {
-		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "board", "", "");
+		log.info("listget search{}, searchSTring{}", search, searchString);
 		
+		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "board", search, searchString);
 		List<BoardVO> vos = service.getBoardList(pageVo.getStartIndexNo(), pageSize);
 		
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);
 		
 		return "board/boardList";
+	}
+	
+	@PostMapping("/list")
+	public String boardListPost(
+			Model model,
+			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
+			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize,
+			@RequestParam(name="search", required = false) String search,
+			@RequestParam(name="searchString", required = false) String searchString
+			) {
+		log.info("pag? {}, pageSize? {}", pag, pageSize);
+		log.info("search? {}, searchString? {}", search, searchString);
+		
+		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "board", search, searchString);
+		List<BoardVO> vos = service.getBoardList(pageVo.getStartIndexNo(), pageSize);
+
+		model.addAttribute("vos", vos);
+		model.addAttribute("pageVo", pageVo);
+		model.addAttribute("search", search);
+		model.addAttribute("searchString", searchString);
+		
+		return "/board/boardList";
 	}
 	
 	@GetMapping(value = "/input")
@@ -60,6 +95,7 @@ public class BoardController {
 		model.addAttribute("homePage", vo.getHomePage());
 		return "board/boardInput";
 	}
+	
 	@PostMapping(value = "/input")
 	public String boardInputPost(BoardVO vo) {
 		
@@ -77,6 +113,7 @@ public class BoardController {
 		}
 		return "redirect:/msg/boardInputSuccess";
 	}
+	
 	@GetMapping(value = "/content")
 	public String boardContentGet(Model model, int idx, int pag, int pageSize, HttpSession session) {
 		service.setBoardReadNum(idx);
@@ -89,17 +126,15 @@ public class BoardController {
 		String mid = ""+session.getAttribute("sMid");
 		// db에서 현재 게시글 좋아요 눌렀는지?
 		long partIdx = (long) idx;
-		/*
-		 * GoodVO goodVO = service.getGoodCheck("board", partIdx, mid);
-		 * 
-		 * if(goodVO == null) {
-		 * 
-		 * }
-		 */
-		
+
 		/*--- 이전글 / 다음글 가져오기 ---*/
 		List<BoardVO> pnVos = service.getPrevNext(idx);
+		
+		List<BoardReplyVO> replyVos = service.getBoardReply(idx);
+		
 		model.addAttribute("pnVos", pnVos);
+		model.addAttribute("replyVos", replyVos);
+		
 		return "board/boardContent";
 	}
 	
@@ -174,5 +209,58 @@ public class BoardController {
 		
 		model.addAttribute("parameter", "?pag="+pag+"&pageSize="+pageSize);
 		return "redirect:/msg/boardUpdateSuccess";
+	}
+	
+	@PostMapping("/reply")
+//	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String boardReply(@ModelAttribute BoardReplyVO replyVo) {
+		Integer levelOrder = 0;
+		levelOrder = service.getMaxLevelOrder(replyVo.getBoardIdx());
+		
+		if(levelOrder!=null) {
+			levelOrder = levelOrder+1;
+		}
+		else {
+			levelOrder = 0;
+		}
+		
+		log.info("levelOrder{}? ", levelOrder);
+		
+		replyVo.setLevelOrder((int)levelOrder);
+		
+		service.setBoardReply(replyVo);
+		
+		return "1";
+	}
+	
+	@PostMapping("/reply2")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String boardReply2Post(@ModelAttribute BoardReplyVO replyVo) {
+		service.setLevelOrderPlusForUpdate(replyVo);
+		replyVo.setLevel(replyVo.getLevel()+1);
+		replyVo.setLevelOrder(replyVo.getLevelOrder()+1);
+		
+		service.setBoardReply2(replyVo);
+		
+		return "";
+	}
+	@ResponseBody
+	@DeleteMapping("/reply/{idx}")
+	public String boardReplyDelete(@PathVariable("idx") int idx) {
+		service.setBoardReplyDelete(idx);
+		return "1";
+	}
+	
+	@ResponseBody
+	@PostMapping("/reply/{idx}")
+	public String boardReplyUpdatePost(
+			@PathVariable("idx") int idx,
+			String content) {
+		log.info("idx? {}, content? {}", idx, content);
+		int res = service.setBoardReplyUpdate(idx, content);
+		
+		return res+"";
 	}
 }

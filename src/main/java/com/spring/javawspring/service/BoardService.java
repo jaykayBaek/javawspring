@@ -2,6 +2,7 @@ package com.spring.javawspring.service;
 
 import java.util.List;
 
+import com.spring.javawspring.vo.BoardReplyVO;
 import com.spring.javawspring.vo.BoardVO;
 import com.spring.javawspring.vo.GoodVO;
 
@@ -28,6 +29,20 @@ public interface BoardService {
 	public void imgCheckAndUpdate(String content);
 
 	public void setBoardUpdateOk(BoardVO paramVo);
-	
+
+	public void setBoardReply(BoardReplyVO replyVo);
+
+	public List<BoardReplyVO> getBoardReply(int idx);
+
+	public void setBoardReplyDelete(int idx);
+
+	public Integer getMaxLevelOrder(int boardIdx);
+
+	public void setLevelOrderPlusForUpdate(BoardReplyVO replyVo);
+
+	public void setBoardReply2(BoardReplyVO replyVo);
+
+	public int setBoardReplyUpdate(int idx, String content);
+
 
 }

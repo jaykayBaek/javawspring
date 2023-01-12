@@ -15,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.spring.javawspring.dao.BoardDAO;
+import com.spring.javawspring.vo.BoardReplyVO;
 import com.spring.javawspring.vo.BoardVO;
 import com.spring.javawspring.vo.GoodVO;
 
@@ -206,6 +207,42 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public void setBoardUpdateOk(BoardVO vo) {
 		dao.setBoardUpdateOk(vo);
+	}
+
+	@Override
+	public void setBoardReply(BoardReplyVO replyVo) {
+		dao.setBoardReply(replyVo);
+	}
+
+	@Override
+	public List<BoardReplyVO> getBoardReply(int idx) {
+		return dao.getBoardReply(idx);
+	}
+
+	@Override
+	public void setBoardReplyDelete(int idx) {
+		dao.setBoardReplyDelete(idx);
+	}
+
+	@Override
+	public Integer getMaxLevelOrder(int boardIdx) {
+		// TODO Auto-generated method stub
+		return dao.getMaxLevelOrder(boardIdx);
+	}
+
+	@Override
+	public void setLevelOrderPlusForUpdate(BoardReplyVO replyVo) {
+		dao.setLevelOrderPlusForUpdate(replyVo);
+	}
+
+	@Override
+	public void setBoardReply2(BoardReplyVO replyVo) {
+		dao.setBoardReply2(replyVo);
+	}
+
+	@Override
+	public int setBoardReplyUpdate(int idx, String content) {
+		return dao.setBoardReplyUpdate(idx, content);
 	}
 	
 	

@@ -132,7 +132,7 @@
   </div>
 <!-- 검색기 처리 시작  -->
 <div class="container text-center">
-  <form name="searchForm" method="post" action="${ctp}/boSearch.bo">
+  <form name="searchForm" method="post">
     <b>검색 : </b>
     <select name="search">
       <option value="title">글제목</option>

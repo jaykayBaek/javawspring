@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,10 @@ import com.spring.javawspring.service.AdminService;
 import com.spring.javawspring.service.MemberService;
 import com.spring.javawspring.vo.MemberVO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 @RequestMapping("/admin")
 public class AdminController {
 	@Autowired
@@ -104,7 +109,7 @@ public class AdminController {
 		return res+"";
 	}
 	
-	@GetMapping("file/list")
+	@GetMapping("/file/list")
 	public String fileListGet(HttpServletRequest request, Model model) {
 		String realPath = request.getRealPath("/resources/data/ckeditor/");
 
@@ -114,7 +119,7 @@ public class AdminController {
 		
 		return "admin/file/fileList";
 	}
-	@PostMapping("file/list")
+	@PostMapping("/file/list")
 	@ResponseBody
 	public String fileListPost(
 			@RequestParam(value="data[]") List<String> data, HttpServletRequest request) {
@@ -132,4 +137,5 @@ public class AdminController {
 		
 		return res;
 	}
+	
 }
