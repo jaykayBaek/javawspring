@@ -27,7 +27,7 @@
     	if(ans) location.href='${ctp}/adMemberDel.ad?pag=${pageVo.pag}&idx='+idx;
     }
     
-    function searCheck(e) {
+    function searhCheck(e) {
     	let ans = confirm("등급을 수정하시겠습니까?");
     	if(!ans) return false;
     	
@@ -77,7 +77,7 @@
       <th>성명</th>
       <th>최초가입일</th>
       <th>마지막접속일</th>
-      <th>등급</th>
+      <th>비고</th>
       <th>탈퇴유무</th>
     </tr>
     <c:forEach var="vo" items="${vos}" varStatus="st">
@@ -89,7 +89,7 @@
         <td>${vo.startDate}</td>
         <td>${vo.lastDate}</td>
         <td>
-          <select name="level" onchange="searCheck(this)">
+          <select name="level" onchange="searhCheck(this)">
             <option value="0/${vo.idx}" <c:if test="${vo.level==0}">selected</c:if>>관리자</option>
             <option value="1/${vo.idx}" <c:if test="${vo.level==1}">selected</c:if>>운영자</option>
             <option value="2/${vo.idx}" <c:if test="${vo.level==2}">selected</c:if>>우수회원</option>

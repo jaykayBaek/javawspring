@@ -290,6 +290,11 @@ public class StudyController {
 		}
 	}
 	
+	@GetMapping("/calendar")
+	public String calendarGet() {
+		service.getCalendar();
+		return "study/calendar/calendar";
+	}
 	
 	
 }

@@ -54,6 +54,10 @@ public class BoardController {
 		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "board", search, searchString);
 		List<BoardVO> vos = service.getBoardList(pageVo.getStartIndexNo(), pageSize);
 		
+		log.debug("getpageVo? {}", pageVo);
+		log.debug("getvos? {}", vos);
+
+		
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);
 		
@@ -68,18 +72,21 @@ public class BoardController {
 			@RequestParam(name="search", required = false) String search,
 			@RequestParam(name="searchString", required = false) String searchString
 			) {
-		log.info("pag? {}, pageSize? {}", pag, pageSize);
-		log.info("search? {}, searchString? {}", search, searchString);
+		log.info("postpag? {}, pageSize? {}", pag, pageSize);
+		log.info("postsearch? {}, searchString? {}", search, searchString);
 		
 		PageVO pageVo = pageProcess.getTotRecordCnt(pag, pageSize, "board", search, searchString);
 		List<BoardVO> vos = service.getBoardList(pageVo.getStartIndexNo(), pageSize);
+		
+		log.debug("postpageVo? {}", pageVo);
+		log.debug("postvos? {}", vos);
 
 		model.addAttribute("vos", vos);
 		model.addAttribute("pageVo", pageVo);
 		model.addAttribute("search", search);
 		model.addAttribute("searchString", searchString);
 		
-		return "/board/boardList";
+		return "redirect:/board/list";
 	}
 	
 	@GetMapping(value = "/input")
