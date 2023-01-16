@@ -28,7 +28,10 @@ import com.spring.javawspring.pagination.PageVO;
 import com.spring.javawspring.service.MemberService;
 import com.spring.javawspring.vo.MemberVO;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 @RequestMapping("/member")
 public class MemberController {
 	
@@ -138,8 +141,8 @@ public class MemberController {
 	@GetMapping(value = "/logout")
 	public String logoutGet(HttpSession session) {
 		String mid = ""+session.getAttribute("sMid");
-		session.invalidate();
 		
+		session.invalidate();
 		return "redirect:/msg/memberLogout?mid="+mid;
 	}
 	@GetMapping(value = "/logout/admin")
@@ -373,6 +376,50 @@ public class MemberController {
 			e.printStackTrace();
 		}
 		return "0";
+	}
+	
+	@GetMapping("/kakao-login")
+	public String kakaoLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, String nickName, String email) {
+		//카카오 로그인 시 회원인지 아닌지 조회하고 가입되어있으면 사용, 그렇지 않으면 회원가입
+		log.info("nickname{}, email{}", nickName, email);
+		MemberVO vo  = service.getMemberNicknameAndEmailCheck(nickName, email);
+		log.info("vo? {}", vo);
+		
+		// 현재 우리회원 아니면 자동회원가입처리
+		if(vo==null) {
+			String mid = email.substring(0, email.indexOf("@"));
+			
+			// 임시 비밀번호 발급
+			String pwd = passwordEncoder.encode("0000");
+			
+			service.setKakaoMemberInput(mid, pwd, nickName, email);
+			
+			// 가입 처리된 회원 정보를 다시 읽어와 vo에 담아준다
+			vo = service.getMemberIdCheck(mid);
+		}
+
+		// 만약에 탈퇴신청한 회원이 카카오로그인처리하였다라면 'userDel'필드를 'NO'로 업데이트한다.
+		if(!vo.getUserDel().equals("NO")) {
+			service.setMemberUserDelCheck(vo.getMid());
+		}
+		// 회원 인증처리된 경우 수행할 내용? strLevel처리, session에 필요한 자료를 저장, 쿠키값처리, 그날 방문자수 1 증가(방문포인트도 증가), ..
+		String strLevel = "";
+		if(vo.getLevel() == 0) strLevel = "관리자";
+		else if(vo.getLevel() == 1) strLevel = "운영자";
+		else if(vo.getLevel() == 2) strLevel = "우수회원";
+		else if(vo.getLevel() == 3) strLevel = "정회원";
+		else if(vo.getLevel() == 4) strLevel = "준회원";
+		
+		session.setAttribute("sLevel", vo.getLevel());
+		session.setAttribute("sStrLevel", strLevel);
+		session.setAttribute("sMid", vo.getMid());
+		session.setAttribute("sNickName", vo.getNickName());
+		session.setAttribute("sKakao", "kakao");
+		
+		// 로그인한 사용자의 오늘 방문횟수(포인트) 누적...
+		service.setVisitMemberProcess(vo);
+		
+		return "redirect:/msg/memberLoginOk?mid="+vo.getMid();
 	}
 	
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.javawspring.dao.PdsDAO">
+
+	<select id="getTotRecordCnt" resultType="int">
+		SELECT COUNT(*)
+		FROM pds2
+		<if test="part != '전체'">WHERE part = #{part}</if>
+	</select>
+	
+	<select id="getPdsList" resultType="com.spring.javawspring.vo.PdsVO">
+		SELECT * FROM pds2
+		<if test="part != '전체'">
+			WHERE part = #{part}
+		</if>
+		ORDER BY idx DESC
+		LIMIT #{startIndexNo}, #{pageSize}
+	</select>
+	
+	<!-- update -->
+	<update id="setPdsDownNum">
+		update pds2 set downNum = downNum+1 where idx = #{idx}
+	</update>
+	
+	<!-- insert -->
+	<insert id="setPdsInput">
+		insert into pds2 values (default, #{vo.mid}, #{vo.nickName}, #{vo.FName}, #{vo.FSName}, #{vo.FSize}, #{vo.title},
+		#{vo.part}, #{vo.pwd}, default, default, #{vo.openSw}, #{vo.content}, #{vo.hostIp})
+	</insert>
+</mapper>

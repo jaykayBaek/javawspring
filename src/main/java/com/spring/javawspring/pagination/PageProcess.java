@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.spring.javawspring.dao.BoardDAO;
 import com.spring.javawspring.dao.GuestDAO;
 import com.spring.javawspring.dao.MemberDAO;
+import com.spring.javawspring.dao.PdsDAO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ public class PageProcess {
 	@Autowired GuestDAO guestDAO;
 	@Autowired MemberDAO memberDAO;
 	@Autowired BoardDAO boardDAO;
+	@Autowired PdsDAO pdsDAO;
 		
 	public PageVO getTotRecordCnt(int pag, int pageSize, String section, String part, String searchString) {
 		log.info("part{}, searchstring{}", part, searchString);
@@ -53,6 +55,8 @@ public class PageProcess {
 			totRecordCnt = guestDAO.getTotRecordCnt();
 		} else if(section.equals("board")) {
 			totRecordCnt = boardDAO.getTotRecordCnt(part, searchString);
+		}else if(section.equals("pds")) {
+			totRecordCnt = pdsDAO.getTotRecordCnt(part);
 		}
 		return totRecordCnt;
 	}

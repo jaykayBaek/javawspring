@@ -6,6 +6,10 @@
 	SELECT * FROM member2 WHERE mid = #{mid} AND userDel = "NO";
 </select>
 
+<select id="getMemberNicknameAndEmailCheck" resultType="com.spring.javawspring.vo.MemberVO">
+	SELECT * FROM member2 WHERE nickName = #{nickName} AND email = #{email};
+</select>
+
 <select id="getMemberNickNameCheck" resultType="com.spring.javawspring.vo.MemberVO">
 	SELECT * FROM member2 WHERE nickName = #{nickName};
 </select>
@@ -39,6 +43,10 @@
 	DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT, DEFAULT)
 </insert>
 
+<insert id="setKakaoMemberInput">
+	insert into member2 values (default,#{mid},#{pwd},#{nickName},'','남자',now(),'010- - ','/ / / /',#{email},'http://','기타','기타',default,'',default,default,default,default,default,default,default,default)
+</insert>
+
 
 <update id="setMemTotalUpdate">
 	UPDATE member2
@@ -50,6 +58,8 @@
 	SET pwd = #{pwd}
 	WHERE mid = #{mid};
 </update>
+
+<update id="setMemberUserDelCheck">update member2 set userDel='NO' where mid = #{mid}; </update>
 
 <update id="setMemberDelNoToYes">
 	UPDATE member2

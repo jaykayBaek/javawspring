@@ -26,4 +26,12 @@ public interface MemberService {
 
 	public void setMemberDelNoToYes(String mid);
 
+	public MemberVO getMemberNicknameAndEmailCheck(String nickName, String email);
+
+	public void setKakaoMemberInput(String mid, String pwd, String nickName, String email);
+
+	public void setMemberUserDelCheck(String mid);
+
+	public void setMemberVisitProcess(MemberVO vo);
+
 }

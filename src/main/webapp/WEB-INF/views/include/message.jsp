@@ -10,7 +10,7 @@
   	'use strict';
   	let msg = "${msg}";
   	let url = "${ctp}/${url}";
-  	
+  	  	
   	alert(msg);
   	location.href=url;
   </script>

@@ -61,6 +61,7 @@
 			<mapping path="/member/**"/>
 			<mapping path="/board/list"/>
 			<exclude-mapping path="/member/login"/>
+			<exclude-mapping path="/member/kakao-login"/>
 			<exclude-mapping path="/member/logout"/>
 			<exclude-mapping path="/member/join"/>
 			<exclude-mapping path="/member/check/id"/>

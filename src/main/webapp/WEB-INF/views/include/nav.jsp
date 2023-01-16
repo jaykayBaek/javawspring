@@ -2,7 +2,15 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
+<script>
+	window.Kakao.init("6cb3b9051183487633a3c4b73e5c7efb");
+	function kakaoLogout() {
+	    location.href="${ctp}/member/logout";
+	    Kakao.Auth.logout();
+	}
+</script>
 <!-- Navbar -->
 <div class="w3-top">
   <div class="w3-bar w3-black w3-card">
@@ -55,8 +63,11 @@
 		<a class="w3-bar-item w3-button" href="${ctp}/member/login">Login</a>
 		<a class="w3-bar-item w3-button" href="${ctp}/member/join">SingUp</a>
     </c:if>
-    <c:if test="${!empty sLevel}">
+    <c:if test="${!empty sLevel && empty sKakao}">
   		<a class="w3-bar-item w3-button" href="${ctp}/member/logout">Logout</a>
+    </c:if>
+    <c:if test="${!empty sLevel && !empty sKakao}">
+  		<a class="w3-bar-item w3-button" onclick = "kakaoLogout()">kakao Logout</a>
     </c:if>
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
   </div>
