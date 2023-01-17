@@ -19,5 +19,16 @@
 		FROM guest2
 		WHERE ${condition} like concat('%', #{search}, '%');
 	</select>
+	
+	<select id="getQrCodInfo" resultType="com.spring.javawspring.vo.QrCodeVO">
+		SELECT *
+		FROM qrcode
+		WHERE qr_code = #{qrCode}
+	</select>
+	
+	<insert id="setCoupon">
+		INSERT INTO qrcode
+		VALUES(DEFAULT, #{qrCode}, #{discountRate}, now()+ INTERVAL 7 day, #{category})
+	</insert>
 
 </mapper>

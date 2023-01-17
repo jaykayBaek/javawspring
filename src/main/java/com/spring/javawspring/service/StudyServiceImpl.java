@@ -1,12 +1,17 @@
 package com.spring.javawspring.service;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +20,15 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.spring.javawspring.dao.StudyDAO;
 import com.spring.javawspring.vo.GuestVO;
+import com.spring.javawspring.vo.QrCodeVO;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -256,6 +268,119 @@ public class StudyServiceImpl implements StudyService {
 		// 현재 달력의 '앞/뒤' 빈공간을 채울, 이전달의 뒷부분과 다음달의 앞부분을 보여주기위해 넘겨주는 변수
 		request.setAttribute("preLastDay", preLastDay); // 이전달의 마지막일자를 기억하고 있는 변수
 		request.setAttribute("nextStartWeek", nextStartWeek); // 다음달의 1일에 해당하는 요일을 기억하고있는 변수
+	}
+
+	@Override
+	public String createQRCode(String mid, String param, String realPath) {
+		String qrCodeName = getQRCodeName(mid, param);
+		
+		try {
+			File file = new File(realPath);
+			
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			String parsedParam = new String(param.getBytes("UTF-8"), "ISO-8859-1");
+			
+			// QRCode 만들기
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBgColor = 0xFFFFFFFF;
+			
+			//QRCode 객체 생성
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+//			BitMatrix bitMatrix = qrCodeWriter.encode(parsedParam, BarcodeFormat.QR_CODE, qrCodeColor, qrCodeBgColor);
+			BitMatrix bitMatrix = qrCodeWriter.encode(parsedParam, BarcodeFormat.QR_CODE, 200, 200);
+			
+			// 전경색(글자색) 배경색 설정
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBgColor);
+			BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);
+			
+			ImageIO.write(bufferedImage, "png", new File(realPath + qrCodeName + ".png")); 
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return qrCodeName;
+	}
+	
+	@Override
+	public String createQRCodeCoupon(String mid, String category, String realPath) {
+		String qrCodeName = getQRCodeNameCoupon(mid, category);
+		
+		
+		try {
+			File file = new File(realPath);
+			
+			if(!file.exists()) {
+				file.mkdirs();
+			}
+			
+			String parsedParam = new String(qrCodeName.getBytes("UTF-8"), "ISO-8859-1");
+			
+			// QRCode 만들기
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBgColor = 0xFFFFFFFF;
+			
+			//QRCode 객체 생성
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+//			BitMatrix bitMatrix = qrCodeWriter.encode(parsedParam, BarcodeFormat.QR_CODE, qrCodeColor, qrCodeBgColor);
+			String path = "http://localhost:9090/javawspring/study/qr-code/add/"+parsedParam;
+			BitMatrix bitMatrix = qrCodeWriter.encode(path, BarcodeFormat.QR_CODE, 200, 200);
+			
+			// 전경색(글자색) 배경색 설정
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBgColor);
+			BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);
+			
+			ImageIO.write(bufferedImage, "png", new File(realPath + qrCodeName + ".png")); 
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		
+		// 할인율 랜덤으로 적용 5퍼~50퍼까지
+		
+		int discountRate = (int) (Math.random()*45)+5;
+		
+		// 쿠폰 만료일 (오늘일로부터 +7일)
+		Date date = new Date();
+		SimpleDateFormat smf = new SimpleDateFormat("yyMMdd");
+		String now = smf.format(date);
+		
+		dao.setCoupon(category, discountRate, qrCodeName);
+		
+		return qrCodeName;
+	}
+
+	private String getQRCodeNameCoupon(String mid, String category) {
+		String qrCodeName = "";
+		
+		UUID uid = UUID.randomUUID();
+		qrCodeName = mid + "_" + category + "_" + uid.toString().substring(0, 5);
+		
+		return qrCodeName;
+	}
+
+	private String getQRCodeName(String mid, String param) {
+		String qrCodeName = "";
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		UUID uid = UUID.randomUUID();
+		String strUid = uid.toString().substring(0, 2);
+		
+		qrCodeName = sdf.format(new Date()) + "_" + mid + "_" +param + "_" + strUid;
+		return qrCodeName;
+	}
+
+	@Override
+	public QrCodeVO getQrCodeInfo(String qrCode) {
+		return dao.getQrCodInfo(qrCode);
 	}
 
 }

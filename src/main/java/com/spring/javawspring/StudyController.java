@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,8 +34,12 @@ import com.spring.javawspring.service.StudyService;
 import com.spring.javawspring.vo.GuestVO;
 import com.spring.javawspring.vo.MailVO;
 import com.spring.javawspring.vo.MemberVO;
+import com.spring.javawspring.vo.QrCodeVO;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 @RequestMapping("/study")
 public class StudyController {
 	
@@ -296,5 +302,55 @@ public class StudyController {
 		return "study/calendar/calendar";
 	}
 	
+	// qr코드 작성폼
+	@GetMapping("/qr-code")
+	public String qrCodeGet(HttpSession session, Model model) {
+		String mid = ""+session.getAttribute("sMid");
+		
+		MemberVO vo = memberService.getMemberIdCheck(mid);
+		
+		model.addAttribute("vo", vo);
+		
+		return "study/qrCode/qrCode";
+	}
 	
+	@PostMapping("/qr-code")
+	@ResponseBody
+	public String qrCodePost(HttpServletRequest request, String mid, String param) {
+		log.info("param? {}", param);
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		String qrCodeName = service.createQRCode(mid, param, realPath);
+		
+		return qrCodeName;
+	}
+	@PostMapping("/qr-code/coupon")
+	@ResponseBody
+	public String couponPost(HttpServletRequest request, String mid, String category) {
+		log.info("category? {}, mid? {}", category, mid);
+
+		 String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		 String qrCodeName = service.createQRCodeCoupon(mid, category, realPath);
+
+		return qrCodeName;
+	}
+	
+	@PostMapping("/qr-code/search")
+	@ResponseBody
+	public QrCodeVO couponSearchPost(String content) {
+		log.info("content? {}", content);
+		
+		QrCodeVO vo = service.getQrCodeInfo(content);
+		
+		return vo;
+	}
+	
+	@GetMapping("/qr-code/add/{qr_code}")
+	public String couponAdd(@PathVariable("qr_code") String qr_code, Model model) {
+		log.info("qr_code", qr_code);
+		QrCodeVO vo = service.getQrCodeInfo(qr_code);
+		
+		model.addAttribute("vo", vo);
+		
+		return "study/qrCode/qrCodeAdd";
+	}
 }

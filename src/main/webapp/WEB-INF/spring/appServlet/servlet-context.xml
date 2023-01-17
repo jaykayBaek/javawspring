@@ -42,6 +42,7 @@
 	
 	<!-- Interceptor -->
 	<beans:bean id="level0" class="com.spring.javawspring.interceptor.Level0"/>
+	<beans:bean id="level2" class="com.spring.javawspring.interceptor.Level2"/>
 	<beans:bean id="level3" class="com.spring.javawspring.interceptor.Level3"/>
 	<beans:bean id="level4" class="com.spring.javawspring.interceptor.Level4"/>
 	
@@ -51,8 +52,18 @@
 			<beans:ref bean="level0"/>
 		</interceptor>
 		
+<!-- 		<interceptor>
+			<mapping path="/pds/**"/>
+			<exclude-mapping path="/pds/list"/>
+			<exclude-mapping path="/pds/totalDown"/>
+			<beans:ref bean="level2"/>
+		</interceptor> -->
+		
 		<interceptor>
 			<mapping path="/board/**"/>
+			<mapping path="/pds/list"/>
+			<mapping path="/pds/download"/>
+			<exclude-mapping path="/member/login"/>
 			<exclude-mapping path="/board/list"/>
 			<beans:ref bean="level3"/>
 		</interceptor>

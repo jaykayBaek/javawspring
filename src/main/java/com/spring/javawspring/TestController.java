@@ -1,6 +1,7 @@
 package com.spring.javawspring;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +28,12 @@ public class TestController {
 		
 		return "ok";
 
+	}
+	
+	@GetMapping("/hi")
+	public String hi (String email, String password) {
+		System.out.println(email);
+		System.out.println(password);
+		return "";
 	}
 }

@@ -46,51 +46,21 @@
     	});
     }
     
-    // 선택한 항목의 자료 삭제하기...(prompt창을 통하여 비밀번호를 입력받아서 처리)
-    function pdsDelCheck(idx,fSName) {
-    	let ans = confirm("선택된 자료파일을 삭제하시겠습니까?");
-    	if(!ans) return false;
-    	
-    	let pwd = prompt("비밀번호를 입력하세요?");
-    	let query = {
-    			idx : idx,
-    			fSName : fSName,
-    			pwd : pwd
-    	}
-    	
-    	$.ajax({
-    		type   : "post",
-    		url    : "${ctp}/pdsDelete.pds",
-    		data   : query,
-    		success:function(res) {
-    			if(res == "1") {
-    				alert("삭제되었습니다.");
-    				location.reload();
-    			}
-    			else {
-    				alert("삭제 실패~~");
-    			}
-    		},
-    		error : function() {
-    			alert("전송 오류~~");
-    		}
-    	});
-    }
+    
     
     // modal창을 통해서 비밀번호 확인후 파일을 삭제처리(Ajax처리)
     function pdsDelCheckModalOk() {
     	let idx = pwdModalForm.idx.value;
-    	let fSName = pwdModalForm.fSName.value;
     	let pwd = pwdModalForm.pwd.value;
     	let query = {
     			idx : idx,
-    			fSName : fSName,
     			pwd : pwd
     	}
     	
     	$.ajax({
-    		type   : "post",
-    		url    : "${ctp}/pdsDelete.pds",
+
+    		method : "DELETE",
+    		url    : "${ctp}/pds/"+idx,
     		data   : query,
     		success:function(res) {
     			if(res == "1") {
@@ -172,35 +142,34 @@
     <c:set var="curScrStartNo" value="${pageVo.curScrStartNo}"/>
     <c:forEach var="vo" items="${vos}">
       <tr>
-        <td>${curScrStartNo}</td>
-        <td>
-          <a href="${ctp}/pdsContent.pds?idx=${vo.idx}&pag=${pag}&part=${part}">${vo.title}</a>
-    	    <c:if test="${vo.hour_diff <= 24}"><img src="${ctp}/images/new.gif"/></c:if>
-        </td>
-        <td>${vo.nickName}</td>
-        <td>
-          <%-- ${vo.FDate} --%>
-          <c:if test="${vo.hour_diff > 24}">${fn:substring(vo.FDate,0,10)}</c:if>
-          <c:if test="${vo.hour_diff < 24}">		<!-- 24시간이 지나지 않았지만 현재시간~자정까찌는 '날짜:시간', 나머지는 '시간'만 출력 -->
-    	      ${vo.day_diff > 0 ? fn:substring(vo.FDate,0,16) : fn:substring(vo.FDate,11,19)}
-    	    </c:if>
-        </td>
-        <td>${vo.part}</td>
-        <td>
-          <c:set var="fNames" value="${fn:split(vo.FName,'/')}"/>
-          <c:set var="fSNames" value="${fn:split(vo.FSName,'/')}"/>
-          <c:forEach var="fName" items="${fNames}" varStatus="st">
+	      <td>${curScrStartNo}</td>
+	      <td>
+	        <a href="${ctp}/pds/contentx?idx=${vo.idx}&pag=${pag}&part=${part}">${vo.title}</a>
+	  	    <c:if test="${vo.hour_diff <= 24}"><img src="${ctp}/images/new.gif"/></c:if>
+	      </td>
+	      <td>${vo.nickName}</td>
+	      <td>
+	        <%-- ${vo.FDate} --%>
+	        <c:if test="${vo.hour_diff > 24}">${fn:substring(vo.FDate,0,10)}</c:if>
+	        <c:if test="${vo.hour_diff < 24}">		<!-- 24시간이 지나지 않았지만 현재시간~자정까찌는 '날짜:시간', 나머지는 '시간'만 출력 -->
+	  	      ${vo.day_diff > 0 ? fn:substring(vo.FDate,0,16) : fn:substring(vo.FDate,11,19)}
+	  	    </c:if>
+	      </td>
+	      <td>${vo.part}</td>
+	      <td>
+	        <c:set var="fNames" value="${fn:split(vo.FName,'/')}"/>
+	        <c:set var="fSNames" value="${fn:split(vo.FSName,'/')}"/>
+	        <c:forEach var="fName" items="${fNames}" varStatus="st">
 	          <a href="${ctp}/data/pds/${fSNames[st.index]}" download="${fName}" onclick="downNumCheck(${vo.idx})">${fName}</a><br/>
-          </c:forEach>
-          (<fmt:formatNumber value="${vo.FSize/1024}" pattern="#,###" />KByte)
-        </td>
-        <td>${vo.downNum}</td>
-        <td>
-          <a href="#" onclick="modalView('${vo.title}','${vo.nickName}','${vo.mid}','${vo.part}','${vo.FName}','${vo.FSName}','${vo.FSize}','${vo.downNum}','${vo.FDate}')" class="badge badge-primary" data-toggle="modal" data-target="#myModal">모달창</a><br/>
-          <a href="${ctp}/pdsTotalDown.pds?idx=${vo.idx}" class="badge badge-secondary">전체다운</a><br/>
-          <a href="javascript:pdsDelCheck('${vo.idx}','${vo.FSName}')" class="badge badge-warning">삭제1</a><br/>
-          <a href="#" onclick="pdsDelCheckModal('${vo.idx}','${vo.FSName}')" data-toggle="modal" data-target="#myPwdModal" class="badge badge-danger">삭제2</a>
-        </td>
+	        </c:forEach>
+	        (<fmt:formatNumber value="${vo.FSize/1024}" pattern="#,###" />KByte)
+	      </td>
+	      <td>${vo.downNum}</td>
+	      <td>
+	        <a href="#" onclick="modalView('${vo.title}','${vo.nickName}','${vo.mid}','${vo.part}','${vo.FName}','${vo.FSName}','${vo.FSize}','${vo.downNum}','${vo.FDate}')" class="badge badge-primary" data-toggle="modal" data-target="#myModal">모달창</a><br/>
+	        <a href="${ctp}/pds/total-download/${vo.idx}" class="badge badge-secondary">전체다운</a><br/>
+	        <a href="#" onclick="pdsDelCheckModal(${vo.idx})" data-toggle="modal" data-target="#myPwdModal" class="badge badge-danger">삭제</a>
+	      </td>
       </tr>
       <c:set var="curScrStartNo" value="${curScrStartNo - 1}"/>
     </c:forEach>
@@ -245,7 +214,6 @@
         <h4 class="modal-title"><span id="title"></span>(분류:<span id="part"></span>)</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      
       <!-- Modal body -->
       <div class="modal-body">
         - 올린이 : <span id="nickName"></span>
@@ -259,7 +227,6 @@
         - 저장파일명 : <span id="fSName"></span><br/>
         <img id="imgSrc" width="450px"/><br/>
       </div>
-      
       <!-- Modal footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -287,7 +254,6 @@
           <input type="password" name="pwd" id="pwd" placeholder="비밀번호를 입력하세요." class="form-control mb-2" required />
           <input type="button" value="비밀번호확인후전송" onclick="pdsDelCheckModalOk()" class="btn btn-success form-control"/>
           <input type="hidden" name="idx" id="idx"/>
-          <input type="hidden" name="fSName" id="fSName"/>
         </form>
       </div>
       
